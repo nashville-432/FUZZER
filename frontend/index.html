@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FUZZER - Enterprise Edition</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>FUZZ<span class="highlight">ER</span></h1>
+                <p>Advanced Engine</p>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" id="nav-scanner">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                    New Scan
+                </button>
+                <button class="nav-btn" id="nav-history">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Scan History
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Scanner View -->
+            <div id="view-scanner" class="view-section active-view">
+                <header class="view-header">
+                    <h2>Live Target <span class="highlight">Scanner</span></h2>
+                </header>
+
+                <div class="dashboard-grid">
+                    <!-- Config Panel -->
+                    <section class="config-panel">
+                        <div class="input-group">
+                            <label for="intensity">Fuzzing Intensity</label>
+                            <select id="intensity" name="intensity" class="modern-select">
+                                <option value="passive">Passive (15-20 mutations/param)</option>
+                                <option value="regular" selected>Regular (~50 mutations/param)</option>
+                                <option value="aggressive">Aggressive (120+ mutations/param)</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="target-url">Base Target URL</label>
+                            <input type="text" id="target-url" placeholder="http://example.com/login" value="http://demo.testfire.net/search.jsp?query=test">
+                        </div>
+
+                        <div class="input-group row-group">
+                            <div class="input-subgroup">
+                                <label for="delay">Delay (ms)</label>
+                                <input type="number" id="delay" value="200" min="0">
+                            </div>
+                            <div class="actions">
+                                <button id="start-btn" class="btn primary">INITIALIZE ATTACK</button>
+                                <button id="stop-btn" class="btn secondary" disabled>ABORT</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Scan Progress & Stats Panel -->
+                    <section class="stats-panel">
+                        <div class="stat-card">
+                            <h3>Current CVSS Score</h3>
+                            <div class="cvss-display" id="cvss-score">0.0</div>
+                            <div class="cvss-severity" id="cvss-severity">NONE</div>
+                        </div>
+
+                        <div class="progress-container">
+                            <div class="progress-header">
+                                <span>Scan Progress</span>
+                                <span id="progress-text">0%</span>
+                            </div>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" id="progress-bar"></div>
+                            </div>
+                        </div>
+
+                        <div class="quote-box">
+                            <p id="fun-fact">"Security is not a product, but a process." - Bruce Schneier</p>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Live Results -->
+                <section class="results-panel">
+                    <div class="panel-header">
+                        <h2>Live Results</h2>
+                        <div class="status-indicator" id="status-indicator">
+                            <span class="dot"></span>
+                            <span class="text">IDLE</span>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="results-table">
+                            <thead>
+                                <tr>
+                                    <th>Payload</th>
+                                    <th>Status</th>
+                                    <th>Length</th>
+                                    <th>Time (ms)</th>
+                                    <th>Error</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-body">
+                                <!-- Results injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <!-- History View -->
+            <div id="view-history" class="view-section">
+                <header class="view-header">
+                    <h2>Scan <span class="highlight">History</span></h2>
+                </header>
+                <section class="history-panel">
+                    <div class="table-container">
+                        <table id="history-table">
+                            <thead>
+                                <tr>
+                                    <th style="cursor: pointer" data-sort="id">ID ↕</th>
+                                    <th style="cursor: pointer" data-sort="url">Target URL ↕</th>
+                                    <th style="cursor: pointer" data-sort="mode">Intensity ↕</th>
+                                    <th style="cursor: pointer" data-sort="date">Date ↕</th>
+                                    <th style="cursor: pointer" data-sort="params">Findings ↕</th>
+                                    <th style="cursor: pointer" data-sort="cvss">CVSS Score ↕</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-body">
+                                <!-- History injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/app.js?v=3"></script>
+</body>
+</html>
