@@ -1,4 +1,4 @@
-from database import engine, Base, SessionLocal, Payload
+from .database import engine, Base, SessionLocal, Payload
 
 # Ensure tables exist
 Base.metadata.create_all(bind=engine)

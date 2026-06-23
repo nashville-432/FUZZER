@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navHistory = document.getElementById('nav-history');
     const viewScanner = document.getElementById('view-scanner');
     const viewHistory = document.getElementById('view-history');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
 
     // Scanner elements
     const targetUrlInput = document.getElementById('target-url');
@@ -13,6 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusIndicator = document.getElementById('status-indicator');
     const resultsBody = document.getElementById('results-body');
     const statusText = statusIndicator.querySelector('.text');
+
+    // Toggle Sidebar collapse
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        if (sidebar.classList.contains('collapsed')) {
+            sidebarToggle.setAttribute('title', 'Expand Sidebar');
+        } else {
+            sidebarToggle.setAttribute('title', 'Collapse Sidebar');
+        }
+    });
     
     // Stats elements
     const progressBarFill = document.getElementById('progress-bar');
@@ -141,11 +153,16 @@ document.addEventListener('DOMContentLoaded', () => {
             statusText.textContent = 'IDLE';
             progressText.textContent = 'Completed.';
             progressBarFill.style.width = '100%';
+            // Ensure final results are fetched and displayed
+            fetchResults();
         }
     }
 
     function startPolling() {
         if (pollInterval) clearInterval(pollInterval);
+        console.log('startPolling invoked');
+        // Immediately fetch results to capture any quick completions
+        fetchResults();
         // Polling every 7 seconds as requested!
         pollInterval = setInterval(fetchResults, 7000);
     }
@@ -158,12 +175,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchResults() {
+        console.log('fetchResults invoked');
         try {
             const response = await fetch('/api/results');
             const data = await response.json();
+            console.log('Fetched results data:', data);
+            console.log('Number of results:', data.results ? data.results.length : 0);
 
             // Render table
             renderResults(data.results);
+            console.log('Rendered results.');
 
             // Update Progress Bar
             if (data.total_requests > 0) {
@@ -202,6 +223,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderResults(results) {
         resultsBody.innerHTML = '';
         
+        if (!results || results.length === 0) {
+            const placeholder = document.createElement('tr');
+            placeholder.innerHTML = `<td colspan="6" style="text-align:center;color:var(--text-muted);">No results yet.</td>`;
+            resultsBody.appendChild(placeholder);
+            return;
+        }
+        
         results.forEach(result => {
             const tr = document.createElement('tr');
             
@@ -211,10 +239,21 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (result.status_code >= 400 && result.status_code < 500) statusClass = 'status-4xx';
             else if (result.status_code >= 500) statusClass = 'status-5xx';
 
+            let zScoreClass = '';
+            let zScoreVal = result.z_score !== undefined ? result.z_score : '0.00';
+            if (result.z_score !== undefined) {
+                if (Math.abs(result.z_score) >= 2.5) {
+                    zScoreClass = 'style="color: var(--neon-red); font-weight: bold;"';
+                } else if (Math.abs(result.z_score) >= 1.5) {
+                    zScoreClass = 'style="color: #FFA500;"';
+                }
+            }
+
             tr.innerHTML = `
                 <td class="payload-cell" title="${escapeHtml(result.payload)}">${escapeHtml(result.payload)}</td>
                 <td class="${statusClass}">${result.status_code || 'ERR'}</td>
                 <td>${result.length}</td>
+                <td ${zScoreClass}>${zScoreVal}</td>
                 <td>${result.time_ms}</td>
                 <td class="payload-cell" title="${escapeHtml(result.error || '')}">${escapeHtml(result.error || '-')}</td>
             `;

@@ -54,6 +54,7 @@ class FuzzerEngine:
                     "method": method,
                     "status_code": response.status_code,
                     "length": len(response.text),
+                    "response_body": response.text[:50000],  # Save chunk for signature matching
                     "time_ms": round((end_time - start_time) * 1000, 2),
                     "error": None
                 })
@@ -64,6 +65,7 @@ class FuzzerEngine:
                     "method": method,
                     "status_code": 0,
                     "length": 0,
+                    "response_body": "",
                     "time_ms": 0,
                     "error": str(e)
                 })

@@ -10,19 +10,23 @@
 <body>
     <div class="app-layout">
         <!-- Sidebar Navigation -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h1>FUZZ<span class="highlight">ER</span></h1>
-                <p>Advanced Engine</p>
+                <h1>F<span class="nav-text">UZZ</span><span class="highlight">ER</span></h1>
+                <p class="nav-text">Advanced Engine</p>
             </div>
+            <!-- Toggle button placed above navigation -->
+            <button class="sidebar-toggle" id="sidebar-toggle" title="Collapse Sidebar">
+                <svg class="toggle-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M15 19l-7-7 7-7"></path></svg>
+            </button>
             <nav class="sidebar-nav">
-                <button class="nav-btn active" id="nav-scanner">
+                <button class="nav-btn active" id="nav-scanner" title="New Scan">
                     <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
-                    New Scan
+                    <span class="nav-text">New Scan</span>
                 </button>
-                <button class="nav-btn" id="nav-history">
+                <button class="nav-btn" id="nav-history" title="Scan History">
                     <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    Scan History
+                    <span class="nav-text">Scan History</span>
                 </button>
             </nav>
         </aside>
@@ -104,6 +108,7 @@
                                     <th>Payload</th>
                                     <th>Status</th>
                                     <th>Length</th>
+                                    <th>Z-Score</th>
                                     <th>Time (ms)</th>
                                     <th>Error</th>
                                 </tr>
