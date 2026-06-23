@@ -5,7 +5,7 @@
   ],
   "functions": {
     "backend/main.py": {
-      "runtime": "@vercel/python"
+      "runtime": "vercel-python@3.12"
     }
   }
 }
