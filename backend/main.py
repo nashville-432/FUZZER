@@ -1,3 +1,4 @@
+from pathlib import Path
 from anyio import to_thread
 from fastapi import FastAPI, BackgroundTasks
 from fastapi.staticfiles import StaticFiles
@@ -241,15 +242,16 @@ async def get_scans():
     finally:
         db.close()
 
-# Mount static files
-frontend_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend")
+# Mount static files — use pathlib for reliable resolution regardless of CWD
+# (os.path.dirname(__file__) can be relative/wrong on cloud platforms like Render)
+frontend_dir = str(Path(__file__).resolve().parent.parent / "frontend")
+print(f"[INFO] Serving static files from: {frontend_dir}")
 app.mount("/static", StaticFiles(directory=frontend_dir), name="static")
 
 @app.get("/")
 async def serve_index():
-    return FileResponse(os.path.join(frontend_dir, "index.html"))
+    return FileResponse(str(Path(frontend_dir) / "index.html"))
 
 if __name__ == "__main__":
-    import os
     port = int(os.getenv("FASTAPI_PORT", "8081"))
     uvicorn.run("backend.main:app", host="0.0.0.0", port=port, reload=True)
