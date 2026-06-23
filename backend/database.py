@@ -2,8 +2,12 @@ from sqlalchemy import create_engine, Column, Integer, String, Float, Text, Date
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
+import os
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./fuzzer.db"
+# Use DB_PATH env var if set (e.g., /data/fuzzer.db on Render with persistent disk)
+# Falls back to a local path for development
+_db_path = os.environ.get("DB_PATH", "./fuzzer.db")
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{_db_path}"
 # check_same_thread=False is needed for SQLite when used with FastAPI
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
